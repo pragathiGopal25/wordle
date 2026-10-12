@@ -1,6 +1,8 @@
 import java.awt.event.*;
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
+
 
 class text extends JFrame implements ActionListener {
     static JTextField t;
@@ -8,7 +10,6 @@ class text extends JFrame implements ActionListener {
     static JButton b;
     static JLabel l;
     static BoardPanel board;
-
     text(){}
 
     public static void main (String[] args){
@@ -39,51 +40,53 @@ class text extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e){
         String s = e.getActionCommand();
+        String guess = t.getText().trim().toUpperCase();
 
         if (s.equals("submit")){
-            l.setText(t.getText());
+            l.setText(guess);
             t.setText(" ");
-            board.repaint();
+            board.addGuess(guess);
         }
     }
-
 }
 
 
 class BoardPanel extends JPanel {
-  
-    public void paint(Graphics g)
-    {
+    ArrayList<String> guesses = new ArrayList<String>();
+
+    public void addGuess(String guess){
+
+        if (guesses.size() <= 5) {
+            guesses.add(guess);
+            repaint();
+        }
+    }
+
+    public void paint(Graphics g){
         super.paintComponent(g);
+
+        int w = 50;
+        int h = 60;
+        int startX = 50;
+        int startY = 50;
+        int gap = 10;
+
         Graphics2D g2 = (Graphics2D) g;
-        g2.drawRect(50, 50, 50, 60);
-        g2.drawRect(110, 50, 50, 60);
-        g2.drawRect(170, 50, 50, 60);
-        g2.drawRect(230, 50, 50, 60);
-        g2.drawRect(290, 50, 50, 60);
+        g2.setFont(new Font("TimesRoman", Font.PLAIN, 24)); 
 
-        g2.drawRect(50, 120, 50, 60);
-        g2.drawRect(110, 120, 50, 60);
-        g2.drawRect(170, 120, 50, 60);
-        g2.drawRect(230, 120, 50, 60);
-        g2.drawRect(290, 120, 50, 60);
 
-        g2.drawRect(50, 190, 50, 60);
-        g2.drawRect(110, 190, 50, 60);
-        g2.drawRect(170, 190, 50, 60);
-        g2.drawRect(230, 190, 50, 60);
-        g2.drawRect(290, 190, 50, 60);
+        for (int row = 0; row < 5; row++) {
+            String word = row < guesses.size() ? guesses.get(row) : "";
 
-        g2.drawRect(50, 260, 50, 60);
-        g2.drawRect(110, 260, 50, 60);
-        g2.drawRect(170, 260, 50, 60);
-        g2.drawRect(230, 260, 50, 60);
-        g2.drawRect(290, 260, 50, 60);
+            for (int col = 0; col < 5; col++) {
+                int x = startX + col * (w + gap);
+                int y = startY + row * (h + gap);
+                g2.drawRect(x, y, w, h);
 
-        g2.drawRect(50, 330, 50, 60);
-        g2.drawRect(110, 330, 50, 60);
-        g2.drawRect(170, 330, 50, 60);
-        g2.drawRect(230, 330, 50, 60);
-        g2.drawRect(290, 330, 50, 60);
+                if (word.length() >= 1) {
+                    g2.drawString(String.valueOf(word.charAt(col)), x + 15, y + 40);
+                }
+            }
+        }
     }
 }

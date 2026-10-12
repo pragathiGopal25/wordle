@@ -32,7 +32,7 @@ class ParseWordFile {
         return words.get(boundInt);
     }
 
-
+    // Check that the word sent in is a valid five letter word 
     public boolean checkValidity(String w) {
         return words.contains(w);
     }
